@@ -30,6 +30,7 @@ next-env.d.ts
 # local screenshots / scratch
 /.screenshots/
 /.playwright-mcp/
+/*.png
 
 # local Claude Code settings
 /.claude/settings.local.json
