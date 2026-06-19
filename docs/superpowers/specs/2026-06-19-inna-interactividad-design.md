@@ -39,6 +39,18 @@ Tarjetas que revelan más información al tocarlas, stats animados y FAQ.
 - 4-6 `Q/A` (placeholder). Una abierta a la vez, altura animada.
 - A11y: igual patrón que expertise (button + aria-expanded + region).
 
+### 5. Sección "Enfoque estratégico" (contenido real del cliente)
+- Bloque de posicionamiento provisto por el cliente. Incluye: manifiesto
+  ("Estrategia, percepción y experiencias digitales" + intro + "el diseño como
+  herramienta estratégica, no estética"), las disciplinas que cruza (chips:
+  estrategia, tecnología, branding, UX/UI, comportamiento humano, automatización,
+  narrativa visual, sistemas digitales), "¿Por qué trabajar conmigo?" (3 pilares)
+  y CTA de cierre → `#diagnostico`.
+- Además, el contenido real "QUÉ DESARROLLO" del cliente reemplaza el placeholder
+  de la sección **Áreas de expertise** (curado en 6 áreas).
+- Componente `components/Approach.tsx` (server; usa `Reveal`). Datos en
+  `lib/content.ts` (`approachTags`, `whyMe`).
+
 ## Arquitectura
 
 ### Contenido — `lib/content.ts`
@@ -80,7 +92,7 @@ mueven a `content.ts` (cambian poco y viven con su UI).
 
 ### Orden final de página
 Nav · Hero · Benefits · Stats(count-up) · Gallery(modal) · **Expertise** ·
-ExclusiveBenefit · **FAQ** · Diagnostic · Footer.
+**Enfoque** · ExclusiveBenefit · **FAQ** · Diagnostic · Footer.
 
 ## Estilos (globals.css)
 - Tokens y pills existentes se reutilizan. Agregar: backdrop del modal
