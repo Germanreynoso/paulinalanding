@@ -1,0 +1,180 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+@layer base {
+  * {
+    @apply border-line;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-ink-0 text-white font-sans antialiased;
+    overflow-x: hidden;
+  }
+  ::selection {
+    background: rgba(255, 255, 255, 0.85);
+    color: #000;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+    text-wrap: balance;
+  }
+  /* Form controls */
+  input,
+  textarea {
+    @apply w-full rounded-xl bg-ink-800/80 px-4 py-3 text-[15px] text-white
+      placeholder:text-faint outline-none transition;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  input:focus,
+  textarea:focus {
+    border-color: rgba(255, 255, 255, 0.4);
+    background: #121215;
+  }
+  label {
+    @apply mb-2 block text-[13px] text-muted;
+  }
+
+  /* Keyboard focus: visible indicator on every interactive element (WCAG 2.4.7) */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.9);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
+
+@layer components {
+  .shell {
+    @apply mx-auto w-full max-w-shell px-6 md:px-8;
+  }
+
+  .eyebrow {
+    @apply font-display text-[11px] uppercase tracking-eyebrow text-faint;
+  }
+
+  /* Buttons -------------------------------------------------------------- */
+  .pill {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5
+      font-display text-[13px] font-semibold uppercase tracking-[0.12em]
+      transition-all duration-200 will-change-transform;
+  }
+  .pill-primary {
+    color: #0a0a0b;
+    background: linear-gradient(180deg, #f4f4f6 0%, #c9c9d0 55%, #aeaeb6 100%);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.6) inset,
+      0 10px 30px -12px rgba(255, 255, 255, 0.35);
+  }
+  .pill-primary:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.7) inset,
+      0 16px 40px -12px rgba(255, 255, 255, 0.45);
+  }
+  .pill-outline {
+    @apply text-white;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.02);
+  }
+  .pill-outline:hover {
+    border-color: rgba(255, 255, 255, 0.55);
+    background: rgba(255, 255, 255, 0.06);
+  }
+  /* Dark charcoal CTA — used by the diagnostic form submit (matches mockup) */
+  .pill-dark {
+    @apply text-white;
+    background: linear-gradient(180deg, #54545b 0%, #313137 48%, #1b1b1e 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.14) inset,
+      0 14px 34px -18px rgba(0, 0, 0, 0.85);
+  }
+  .pill-dark:hover {
+    transform: translateY(-1px);
+    background: linear-gradient(180deg, #61616a 0%, #38383f 48%, #202024 100%);
+  }
+
+  /* Cards ---------------------------------------------------------------- */
+  .card {
+    @apply rounded-2xl p-6;
+    background: linear-gradient(155deg, #17171b 0%, #0c0c0e 100%);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-2 rounded-full px-4 py-2 font-display
+      text-[11px] uppercase tracking-[0.18em] text-muted;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .section {
+    @apply relative py-24 md:py-32;
+  }
+
+  .h-section {
+    @apply text-center font-display text-4xl leading-[1.05] md:text-[56px];
+  }
+}
+
+@layer utilities {
+  .text-thin {
+    @apply font-light text-white/60;
+  }
+  /* Radial light glow used behind hero + benefit blocks */
+  .glow-tr {
+    background: radial-gradient(
+      60% 60% at 78% 18%,
+      rgba(220, 220, 230, 0.16) 0%,
+      rgba(160, 160, 175, 0.06) 35%,
+      transparent 70%
+    );
+  }
+  .glow-center {
+    background: radial-gradient(
+      50% 50% at 50% 50%,
+      rgba(210, 210, 225, 0.1) 0%,
+      transparent 70%
+    );
+  }
+}
+
+/* Scroll reveal ---------------------------------------------------------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .animate-spin-slow {
+    animation: none !important;
+  }
+}
