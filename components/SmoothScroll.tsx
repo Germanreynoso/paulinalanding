@@ -25,7 +25,13 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
   return (
     <ReactLenis
       root
-      options={{ anchors: true, lerp: 0.1, duration: 1.1, smoothWheel: true }}
+      options={{
+        // anchors:true respeta scroll-padding-top (90px) del header fijo.
+        anchors: true,
+        lerp: 0.1,
+        duration: 1.1,
+        smoothWheel: true,
+      }}
     >
       {children}
     </ReactLenis>

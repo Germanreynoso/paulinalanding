@@ -4,7 +4,7 @@ import GalleryInteractive from "./GalleryInteractive";
 export default function Gallery() {
   return (
     <section id="galeria" className="section">
-      <Reveal className="shell text-center">
+      <Reveal blur className="shell text-center">
         <h2 className="h-section font-bold">
           ¿Qué pasa cuando
           <br />

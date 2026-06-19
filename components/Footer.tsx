@@ -66,9 +66,9 @@ export default function Footer() {
             href={whatsappUrl("¡Hola Paulina! Quiero hablar sobre mi marca.")}
             target="_blank"
             rel="noopener noreferrer"
-            className="eyebrow mt-5 inline-block hover:text-white transition-colors"
+            className="link-arrow eyebrow mt-5 inline-block transition-colors hover:text-white"
           >
-            Hablemos →
+            Hablemos <span className="arrow">→</span>
           </a>
         </div>
       </div>

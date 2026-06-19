@@ -1,4 +1,6 @@
 import Nav from "@/components/Nav";
+import ScrollProgress from "@/components/ScrollProgress";
+import CardSpotlight from "@/components/CardSpotlight";
 import Hero from "@/components/Hero";
 import Benefits from "@/components/Benefits";
 import Stats from "@/components/Stats";
@@ -13,6 +15,8 @@ import Footer from "@/components/Footer";
 export default function Home() {
   return (
     <main className="relative">
+      <ScrollProgress />
+      <CardSpotlight />
       <Nav />
       <Hero />
       <Benefits />
