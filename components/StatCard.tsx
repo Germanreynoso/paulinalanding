@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import CountUp from "./CountUp";
 
 type Props = {
@@ -21,13 +21,15 @@ export default function StatCard({
   breakdown,
 }: Props) {
   const [open, setOpen] = useState(false);
+  const breakdownId = useId();
 
   return (
     <button
       type="button"
       aria-expanded={open}
+      aria-controls={breakdownId}
       onClick={() => setOpen((o) => !o)}
-      className="stat-card group card flex flex-col text-left"
+      className="stat-card card flex flex-col text-left"
     >
       <span className="font-display text-5xl font-bold tracking-tight">
         <CountUp value={value} prefix={prefix} suffix={suffix} />
@@ -36,6 +38,7 @@ export default function StatCard({
       <span className="mt-2 text-[13px] leading-relaxed text-faint">{desc}</span>
 
       <span
+        id={breakdownId}
         className={`stat-breakdown text-[12px] leading-relaxed text-muted ${
           open ? "is-open" : ""
         }`}

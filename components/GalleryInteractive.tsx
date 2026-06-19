@@ -38,7 +38,7 @@ export default function GalleryInteractive() {
             <span className="absolute bottom-4 left-4 font-display text-[11px] uppercase tracking-[0.18em] text-white/85">
               {p.name}
             </span>
-            <span className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full border border-white/30 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            <span className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full border border-white/40 bg-black/30 text-white opacity-70 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
               +
             </span>
           </button>
@@ -48,11 +48,20 @@ export default function GalleryInteractive() {
       <Modal
         open={!!selected}
         onClose={() => setSelected(null)}
-        labelledById="project-modal-title"
+        labelledById={selected ? "project-modal-title" : undefined}
         className="modal-panel--project"
       >
         {selected && (
-          <div>
+          <>
+            <button
+              type="button"
+              onClick={() => setSelected(null)}
+              aria-label="Cerrar"
+              className="modal-close"
+            >
+              ✕
+            </button>
+
             <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl">
               <Image
                 src={selected.image}
@@ -62,15 +71,6 @@ export default function GalleryInteractive() {
                 className="object-cover"
               />
             </div>
-
-            <button
-              type="button"
-              onClick={() => setSelected(null)}
-              aria-label="Cerrar"
-              className="modal-close"
-            >
-              ✕
-            </button>
 
             <div className="mt-6">
               <p className="eyebrow">{selected.year}</p>
@@ -107,7 +107,7 @@ export default function GalleryInteractive() {
                 Quiero algo así
               </a>
             </div>
-          </div>
+          </>
         )}
       </Modal>
     </>

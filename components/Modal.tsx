@@ -25,32 +25,62 @@ export default function Modal({
   const [render, setRender] = useState(open); // mantener montado durante salida
   const [visible, setVisible] = useState(false); // clase para transición
   const panelRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
   const lastFocused = useRef<HTMLElement | null>(null);
 
   useEffect(() => setMounted(true), []);
 
-  // Enter/leave
+  // Enter/leave — doble rAF para garantizar que el estado inicial
+  // (data-visible=false) se pinte antes de activar la transición de entrada.
   useEffect(() => {
     if (open) {
       lastFocused.current = document.activeElement as HTMLElement;
       setRender(true);
-      const r = requestAnimationFrame(() => setVisible(true));
-      return () => cancelAnimationFrame(r);
+      let r2 = 0;
+      const r1 = requestAnimationFrame(() => {
+        r2 = requestAnimationFrame(() => setVisible(true));
+      });
+      return () => {
+        cancelAnimationFrame(r1);
+        cancelAnimationFrame(r2);
+      };
     }
     setVisible(false);
     const t = setTimeout(() => setRender(false), 220);
     return () => clearTimeout(t);
   }, [open]);
 
-  // Scroll lock + foco inicial + foco de retorno
+  // Scroll lock + fondo inerte + foco inicial + foco de retorno
   useEffect(() => {
     if (!render) return;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+
+    // El resto del DOM queda inerte para teclado y lectores de pantalla
+    // (aria-modal no es honrado de forma fiable por todos los AT).
+    const overlay = overlayRef.current;
+    const backgrounded = Array.from(document.body.children).filter(
+      (el) => el !== overlay
+    );
+    const prevState = backgrounded.map((el) => ({
+      el,
+      hadInert: el.hasAttribute("inert"),
+      ariaHidden: el.getAttribute("aria-hidden"),
+    }));
+    backgrounded.forEach((el) => {
+      el.setAttribute("inert", "");
+      el.setAttribute("aria-hidden", "true");
+    });
+
     const focusTimer = setTimeout(() => panelRef.current?.focus(), 0);
     return () => {
       document.body.style.overflow = prevOverflow;
       clearTimeout(focusTimer);
+      prevState.forEach(({ el, hadInert, ariaHidden }) => {
+        if (!hadInert) el.removeAttribute("inert");
+        if (ariaHidden === null) el.removeAttribute("aria-hidden");
+        else el.setAttribute("aria-hidden", ariaHidden);
+      });
       lastFocused.current?.focus?.();
     };
   }, [render]);
@@ -94,7 +124,12 @@ export default function Modal({
   if (!mounted || !render) return null;
 
   return createPortal(
-    <div className="modal-overlay" data-visible={visible} onClick={onClose}>
+    <div
+      ref={overlayRef}
+      className="modal-overlay"
+      data-visible={visible}
+      onClick={onClose}
+    >
       <div
         ref={panelRef}
         role="dialog"

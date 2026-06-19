@@ -19,7 +19,7 @@ export default function Expertise() {
         </h2>
       </Reveal>
 
-      <Reveal delay={120} className="shell mt-12 grid gap-x-12 md:grid-cols-2">
+      <Reveal delay={120} className="shell mt-12 grid gap-x-12 md:grid-cols-2 md:items-start">
         {expertise.map((e) => (
           <Accordion
             key={e.id}

@@ -64,9 +64,18 @@ export default function CountUp({
 
   return (
     <span ref={ref} className={className}>
-      {prefix}
-      {display}
-      {suffix}
+      {/* Animado: oculto para AT (evita anunciar valores intermedios). */}
+      <span aria-hidden="true">
+        {prefix}
+        {display}
+        {suffix}
+      </span>
+      {/* Valor final estable para lectores de pantalla. */}
+      <span className="sr-only">
+        {prefix}
+        {value}
+        {suffix}
+      </span>
     </span>
   );
 }
