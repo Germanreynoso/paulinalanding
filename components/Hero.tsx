@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Stars from "./Stars";
+import HeroSphere from "./HeroSphere";
 
 export default function Hero() {
   return (
@@ -34,17 +34,10 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Sphere */}
+        {/* Sphere (WebGL con fallback al PNG) */}
         <div className="relative mx-auto aspect-square w-full max-w-[460px]">
           <div className="glow-center absolute inset-0 scale-110" />
-          <Image
-            src="/sphere.png"
-            alt="Esfera de líneas — identidad visual INNA"
-            fill
-            priority
-            sizes="(max-width: 1024px) 80vw, 460px"
-            className="animate-spin-slow object-contain opacity-90 [animation-duration:120s]"
-          />
+          <HeroSphere />
         </div>
       </div>
     </section>
