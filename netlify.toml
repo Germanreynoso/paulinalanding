@@ -1,0 +1,13 @@
+[build]
+  command = "npm run build"
+  publish = "out"
+
+[build.environment]
+  # Next.js 16 requiere Node >= 20.9
+  NODE_VERSION = "20"
+
+# Cache largo para assets versionados de Next
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
