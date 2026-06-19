@@ -56,30 +56,45 @@ export default function HeroSphere() {
       tilt.add(spin);
       scene.add(tilt);
 
-      const RINGS = 26;
-      const SEG = 120;
-      const RADIUS = 1.25;
-      const GOLDEN = 2.39996323; // ángulo áureo (rad)
+      // Toroide tejido (anillo con hueco), fiel al asset original: muchos
+      // círculos de sección con una leve torsión que crea el "ribbon".
+      const R = 1.0; // radio del anillo
+      const TUBE = 0.5; // radio del tubo (hueco central ~1/3 del diámetro)
+      const CIRCLES = 84; // círculos de sección (finos y densos)
+      const SEG = 64; // segmentos por círculo
+      const TWIST = 0.6; // torsión suave -> tejido diagonal (sin "alas")
       const material = new THREE.LineBasicMaterial({
         color: 0xc8ccd6,
         transparent: true,
-        opacity: 0.5,
+        opacity: 0.32,
       });
       const geometries: InstanceType<typeof THREE.BufferGeometry>[] = [];
 
-      for (let i = 0; i < RINGS; i++) {
+      for (let i = 0; i < CIRCLES; i++) {
+        const theta = (i / CIRCLES) * Math.PI * 2;
+        const ct = Math.cos(theta);
+        const st = Math.sin(theta);
+        const tw = theta * TWIST;
+        const vt = Math.sin(tw); // componente tangencial del eje v
+        const vz = Math.cos(tw); // componente Z del eje v
         const pts: InstanceType<typeof THREE.Vector3>[] = [];
         for (let s = 0; s <= SEG; s++) {
-          const a = (s / SEG) * Math.PI * 2;
-          pts.push(new THREE.Vector3(Math.cos(a) * RADIUS, Math.sin(a) * RADIUS, 0));
+          const phi = (s / SEG) * Math.PI * 2;
+          const cphi = Math.cos(phi) * TUBE;
+          const sphi = Math.sin(phi) * TUBE;
+          // centro del círculo en R*radial; u = radial, v = cos(tw)*Z + sin(tw)*tangencial
+          const x = (R + cphi) * ct + sphi * vt * -st;
+          const y = (R + cphi) * st + sphi * vt * ct;
+          const z = sphi * vz;
+          pts.push(new THREE.Vector3(x, y, z));
         }
         const geo = new THREE.BufferGeometry().setFromPoints(pts);
         geometries.push(geo);
-        const ring = new THREE.LineLoop(geo, material);
-        ring.rotation.y = i * GOLDEN;
-        ring.rotation.x = i * GOLDEN * 0.5;
-        spin.add(ring);
+        spin.add(new THREE.LineLoop(geo, material));
       }
+
+      // Tilt base para verlo en 3/4 (como el render original).
+      spin.rotation.x = 0.5;
 
       setReady(true);
 
@@ -108,8 +123,7 @@ export default function HeroSphere() {
       const animate = () => {
         if (disposed) return;
         raf = requestAnimationFrame(animate);
-        spin.rotation.y += 0.0016;
-        spin.rotation.x += 0.0004;
+        spin.rotation.z += 0.003; // gira sobre el eje del anillo
         // inclinación suave (lerp) hacia el cursor
         tilt.rotation.y += (targetX * 0.45 - tilt.rotation.y) * 0.05;
         tilt.rotation.x += (targetY * 0.4 - tilt.rotation.x) * 0.05;
