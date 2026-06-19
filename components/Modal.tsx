@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useLenis } from "lenis/react";
 
 type Props = {
   open: boolean;
@@ -27,6 +28,7 @@ export default function Modal({
   const panelRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const lastFocused = useRef<HTMLElement | null>(null);
+  const lenis = useLenis();
 
   useEffect(() => setMounted(true), []);
 
@@ -55,6 +57,7 @@ export default function Modal({
     if (!render) return;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    lenis?.stop(); // pausa el smooth-scroll del fondo mientras el modal está abierto
 
     // El resto del DOM queda inerte para teclado y lectores de pantalla
     // (aria-modal no es honrado de forma fiable por todos los AT).
@@ -75,6 +78,7 @@ export default function Modal({
     const focusTimer = setTimeout(() => panelRef.current?.focus(), 0);
     return () => {
       document.body.style.overflow = prevOverflow;
+      lenis?.start();
       clearTimeout(focusTimer);
       prevState.forEach(({ el, hadInert, ariaHidden }) => {
         if (!hadInert) el.removeAttribute("inert");
@@ -83,7 +87,7 @@ export default function Modal({
       });
       lastFocused.current?.focus?.();
     };
-  }, [render]);
+  }, [render, lenis]);
 
   // Esc + focus trap
   useEffect(() => {
@@ -136,6 +140,7 @@ export default function Modal({
         aria-modal="true"
         aria-labelledby={labelledById}
         tabIndex={-1}
+        data-lenis-prevent
         className={`modal-panel ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
