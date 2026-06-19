@@ -10,7 +10,7 @@ export default function Expertise() {
 
   return (
     <section id="expertise" className="section">
-      <Reveal className="shell text-center">
+      <Reveal blur className="shell text-center">
         <p className="eyebrow">Áreas de expertise</p>
         <h2 className="h-section mt-4 font-bold">
           Todo lo que tu marca

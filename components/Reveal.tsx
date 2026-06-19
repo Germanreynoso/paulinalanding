@@ -7,9 +7,16 @@ type Props = {
   className?: string;
   /** delay in ms before the element animates in */
   delay?: number;
+  /** añade un blur-in además del fade/translate */
+  blur?: boolean;
 };
 
-export default function Reveal({ children, className = "", delay = 0 }: Props) {
+export default function Reveal({
+  children,
+  className = "",
+  delay = 0,
+  blur = false,
+}: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -34,7 +41,9 @@ export default function Reveal({ children, className = "", delay = 0 }: Props) {
   return (
     <div
       ref={ref}
-      className={`reveal ${visible ? "is-visible" : ""} ${className}`}
+      className={`reveal ${blur ? "reveal--blur" : ""} ${
+        visible ? "is-visible" : ""
+      } ${className}`}
       style={delay ? { transitionDelay: `${delay}ms` } : undefined}
     >
       {children}

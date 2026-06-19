@@ -13,6 +13,8 @@
   }
   html {
     scroll-behavior: smooth;
+    /* Compensa el header fijo al saltar a anclas (fallback sin Lenis). */
+    scroll-padding-top: 90px;
   }
   body {
     @apply bg-ink-0 text-white font-sans antialiased;
@@ -37,8 +39,9 @@
   }
   input:focus,
   textarea:focus {
-    border-color: rgba(255, 255, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.45);
     background: #121215;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06);
   }
   label {
     @apply mb-2 block text-[13px] text-muted;
@@ -67,9 +70,30 @@
 
   /* Buttons -------------------------------------------------------------- */
   .pill {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5
-      font-display text-[13px] font-semibold uppercase tracking-[0.12em]
-      transition-all duration-200 will-change-transform;
+    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden
+      rounded-full px-7 py-3.5 font-display text-[13px] font-semibold uppercase
+      tracking-[0.12em] transition-all duration-200 will-change-transform;
+  }
+  /* Barrido de brillo al hover */
+  .pill::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 55%;
+    height: 100%;
+    background: linear-gradient(
+      100deg,
+      transparent,
+      rgba(255, 255, 255, 0.35),
+      transparent
+    );
+    transform: skewX(-20deg);
+    transition: left 0.6s ease;
+    pointer-events: none;
+  }
+  .pill:hover::after {
+    left: 150%;
   }
   .pill-primary {
     color: #0a0a0b;
@@ -109,9 +133,35 @@
 
   /* Cards ---------------------------------------------------------------- */
   .card {
-    @apply rounded-2xl p-6;
+    @apply relative overflow-hidden rounded-2xl p-6;
     background: linear-gradient(155deg, #17171b 0%, #0c0c0e 100%);
     border: 1px solid rgba(255, 255, 255, 0.07);
+    transition:
+      transform 0.3s ease,
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+  /* Halo que sigue al cursor (posición vía --spot-x/--spot-y desde CardSpotlight) */
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      220px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+      rgba(255, 255, 255, 0.08),
+      transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.8);
+  }
+  .card:hover::before {
+    opacity: 1;
   }
 
   .chip {
@@ -213,6 +263,53 @@
   .accordion-icon[data-open="true"] {
     transform: rotate(45deg);
   }
+
+  /* Marquee de disciplinas ---------------------------------------------- */
+  .marquee {
+    display: flex;
+    width: 100%;
+    overflow: hidden;
+    user-select: none;
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent,
+      #000 8%,
+      #000 92%,
+      transparent
+    );
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .marquee__track {
+    display: flex;
+    flex-shrink: 0;
+    min-width: 100%;
+    align-items: center;
+    justify-content: space-around;
+    gap: 2.5rem;
+    padding-right: 2.5rem;
+    animation: marquee 26s linear infinite;
+  }
+  .marquee:hover .marquee__track {
+    animation-play-state: paused;
+  }
+  .marquee__item {
+    @apply font-display text-sm uppercase tracking-[0.18em] text-muted;
+    white-space: nowrap;
+  }
+  .marquee__item::before {
+    content: "✦";
+    margin-right: 2.5rem;
+    color: rgba(255, 255, 255, 0.28);
+  }
+
+  /* Flecha que se desliza en links ------------------------------------- */
+  .link-arrow .arrow {
+    display: inline-block;
+    transition: transform 0.25s ease;
+  }
+  .link-arrow:hover .arrow {
+    transform: translateX(4px);
+  }
 }
 
 @layer utilities {
@@ -243,11 +340,41 @@
   transform: translateY(26px);
   transition:
     opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+.reveal--blur {
+  filter: blur(12px);
+}
+.reveal--blur.is-visible {
+  filter: blur(0);
+}
+
+/* Split-text: entrada palabra por palabra (corre al cargar) -------------- */
+.word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.45em);
+  animation: word-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes word-in {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -268,5 +395,22 @@
   .accordion-panel,
   .accordion-icon {
     transition: none;
+  }
+  .reveal--blur {
+    filter: none;
+  }
+  .word {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .marquee__track {
+    animation: none;
+  }
+  .pill::after {
+    display: none;
+  }
+  .card:hover {
+    transform: none;
   }
 }

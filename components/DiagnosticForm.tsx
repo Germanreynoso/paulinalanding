@@ -18,6 +18,7 @@ const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export default function DiagnosticForm() {
   const [f, setF] = useState<Fields>(empty);
   const [errors, setErrors] = useState<Partial<Record<keyof Fields, string>>>({});
+  const [sent, setSent] = useState(false);
 
   const set = (k: keyof Fields) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setF((prev) => ({ ...prev, [k]: e.target.value }));
@@ -47,6 +48,8 @@ export default function DiagnosticForm() {
       (f.proyecto.trim() ? `• Proyecto: ${f.proyecto}\n` : "");
 
     window.open(whatsappUrl(msg), "_blank", "noopener,noreferrer");
+    setSent(true);
+    window.setTimeout(() => setSent(false), 4000);
   }
 
   return (
@@ -117,9 +120,18 @@ export default function DiagnosticForm() {
         Quiero mi diagnóstico gratis
       </button>
 
-      <p className="mt-4 text-center text-[13px] text-faint">
-        Respondo <span className="text-white/80">en menos de 24 hs</span>
-      </p>
+      {sent ? (
+        <p
+          role="status"
+          className="mt-4 text-center text-[13px] font-medium text-emerald-300"
+        >
+          ✓ ¡Listo! Te llevo a WhatsApp…
+        </p>
+      ) : (
+        <p className="mt-4 text-center text-[13px] text-faint">
+          Respondo <span className="text-white/80">en menos de 24 hs</span>
+        </p>
+      )}
     </form>
   );
 }

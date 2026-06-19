@@ -10,7 +10,7 @@ export default function Faq() {
 
   return (
     <section id="faq" className="section">
-      <Reveal className="shell text-center">
+      <Reveal blur className="shell text-center">
         <p className="eyebrow">Preguntas frecuentes</p>
         <h2 className="h-section mt-4 font-bold">¿Tenés dudas?</h2>
       </Reveal>

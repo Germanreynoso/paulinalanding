@@ -1,12 +1,13 @@
 import Reveal from "./Reveal";
-import { approachTags, whyMe } from "@/lib/content";
+import Marquee from "./Marquee";
+import { whyMe } from "@/lib/content";
 
 export default function Approach() {
   return (
     <section id="enfoque" className="section overflow-hidden">
       <div className="shell">
         {/* Manifiesto */}
-        <Reveal className="max-w-3xl">
+        <Reveal blur className="max-w-3xl">
           <p className="eyebrow">Enfoque</p>
           <h2 className="mt-5 font-display text-3xl font-bold leading-[1.1] md:text-5xl">
             Estrategia, percepción y
@@ -28,15 +29,11 @@ export default function Approach() {
           </p>
         </Reveal>
 
-        {/* Disciplinas que cruza */}
+        {/* Disciplinas que cruza (marquee) */}
         <Reveal delay={120} className="mt-12">
           <p className="eyebrow">Donde se cruzan</p>
-          <div className="mt-5 flex flex-wrap gap-2.5">
-            {approachTags.map((t) => (
-              <span key={t} className="chip">
-                {t}
-              </span>
-            ))}
+          <div className="mt-6">
+            <Marquee />
           </div>
         </Reveal>
 
